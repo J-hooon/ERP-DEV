@@ -1,0 +1,177 @@
+{
+  "schemaVersion": "1.0",
+  "fixtureId": "two-business-synthetic-v1",
+  "privacy": "SYNTHETIC_NO_REAL_IDENTIFIERS",
+  "businessOperators": [
+    {
+      "id": "OP-A",
+      "displayName": "Synthetic Operator A",
+      "taxRegistrationRef": "SYN-TAX-A"
+    },
+    {
+      "id": "OP-B",
+      "displayName": "Synthetic Operator B",
+      "taxRegistrationRef": "SYN-TAX-B"
+    }
+  ],
+  "products": [
+    {
+      "productId": "P1",
+      "name": "Synthetic Product",
+      "skus": [
+        {
+          "skuId": "SKU-001",
+          "barcode": "SYN-BAR-001"
+        }
+      ]
+    }
+  ],
+  "operatorProductPolicies": [
+    {
+      "businessOperatorId": "OP-A",
+      "skuId": "SKU-001",
+      "sellable": true
+    },
+    {
+      "businessOperatorId": "OP-B",
+      "skuId": "SKU-001",
+      "sellable": true
+    }
+  ],
+  "channelAccounts": [
+    {
+      "channelAccountId": "CA-A",
+      "platform": "COUPANG",
+      "businessOperatorId": "OP-A",
+      "externalAccountId": "VENDOR-A",
+      "fulfilmentProgram": "SELLER_DELIVERY"
+    },
+    {
+      "channelAccountId": "CA-B",
+      "platform": "COUPANG",
+      "businessOperatorId": "OP-B",
+      "externalAccountId": "VENDOR-B",
+      "fulfilmentProgram": "ROCKET_GROWTH"
+    }
+  ],
+  "inventoryPools": [
+    {
+      "inventoryPoolId": "POOL-A-INTERNAL",
+      "businessOperatorId": "OP-A",
+      "inventoryOwner": "OP-A",
+      "custodyProvider": "INTERNAL",
+      "authorityMode": "INTERNAL_LEDGER",
+      "skuId": "SKU-001",
+      "authoritative": {
+        "onHand": 10,
+        "activeCommitment": 0
+      }
+    },
+    {
+      "inventoryPoolId": "POOL-B-RG",
+      "businessOperatorId": "OP-B",
+      "inventoryOwner": "UNKNOWN",
+      "custodyProvider": "COUPANG_FULFILMENT",
+      "authorityMode": "EXTERNAL_OBSERVED",
+      "skuId": "SKU-001",
+      "remoteObservation": {
+        "observedOrderableQuantity": 7,
+        "fetchedAt": "2026-09-04T10:00:00Z",
+        "sourceEventAt": null
+      }
+    }
+  ],
+  "orders": [
+    {
+      "internalOrderId": "ORD-A-001",
+      "platform": "COUPANG",
+      "channelAccountId": "CA-A",
+      "externalOrderId": "ORDER-SAME-001",
+      "businessOperatorId": "OP-A",
+      "lines": [
+        {
+          "lineId": "LINE-A-1",
+          "skuId": "SKU-001",
+          "quantity": 4
+        }
+      ]
+    },
+    {
+      "internalOrderId": "ORD-B-001",
+      "platform": "COUPANG",
+      "channelAccountId": "CA-B",
+      "externalOrderId": "ORDER-SAME-001",
+      "businessOperatorId": "OP-B",
+      "lines": [
+        {
+          "lineId": "LINE-B-1",
+          "skuId": "SKU-001",
+          "quantity": 3
+        }
+      ]
+    }
+  ],
+  "duplicateImportCases": [
+    {
+      "platform": "COUPANG",
+      "channelAccountId": "CA-A",
+      "externalOrderId": "ORDER-SAME-001",
+      "expectedInternalOrderId": "ORD-A-001",
+      "expectedNewOrderCount": 0
+    }
+  ],
+  "reservationAttacks": [
+    {
+      "caseId": "CONCURRENT-INTERNAL-POOL",
+      "businessOperatorId": "OP-A",
+      "inventoryPoolId": "POOL-A-INTERNAL",
+      "requests": [
+        {
+          "requestId": "R1",
+          "quantity": 6
+        },
+        {
+          "requestId": "R2",
+          "quantity": 5
+        }
+      ],
+      "expected": {
+        "confirmedQuantityMax": 10,
+        "oversell": false
+      }
+    },
+    {
+      "caseId": "CROSS-OPERATOR-BLOCK",
+      "businessOperatorId": "OP-B",
+      "inventoryPoolId": "POOL-A-INTERNAL",
+      "quantity": 1,
+      "expected": {
+        "result": "REJECTED",
+        "reason": "NO_EXPLICIT_TRANSFER_OR_ALLOCATION_AUTHORITY"
+      }
+    }
+  ],
+  "externalObservationCase": {
+    "inventoryPoolId": "POOL-B-RG",
+    "internalExpectedOrderable": 9,
+    "remoteObservedOrderable": 7,
+    "expectedProblem": "EXTERNAL_INVENTORY_DIVERGENCE",
+    "mustNotInfer": [
+      "PHYSICAL_ON_HAND",
+      "LOCATION_LEDGER",
+      "WAREHOUSE_RESERVATION_EVENT"
+    ]
+  },
+  "expectedUiContext": {
+    "defaultBusinessOperatorId": "OP-A",
+    "operatorSwitchKeepsSharedProductIdentity": true,
+    "problemDashboardFirst": true,
+    "powerWorkCapabilities": [
+      "FILTER",
+      "SEARCH",
+      "MULTI_SELECT",
+      "BULK_ACTION",
+      "KEYBOARD_NAVIGATION"
+    ]
+  }
+}
