@@ -1,0 +1,69 @@
+name: Development research request
+description: Route a development-originated question to the ERP feedback research channel.
+title: "[RESEARCH] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this only when product development needs evidence or deeper research before making a decision. Long-form research belongs in J-hooon/ERP-Knowledge; this Issue keeps the development context and return pointer.
+
+  - type: textarea
+    id: development-context
+    attributes:
+      label: Development context
+      description: What feature, bug, or decision produced this question?
+      placeholder: Current work and the exact point where the uncertainty appeared.
+    validations:
+      required: true
+
+  - type: input
+    id: code-pointer
+    attributes:
+      label: Code pointer
+      description: File, PR, commit, or NONE.
+      placeholder: src/... / PR #... / commit ... / NONE
+    validations:
+      required: true
+
+  - type: textarea
+    id: research-question
+    attributes:
+      label: Research question
+      description: Ask the smallest question that can unblock one product decision.
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-assumption
+    attributes:
+      label: Current assumption
+      description: What is development currently assuming? Write NONE if there is no assumption.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why-this-matters
+    attributes:
+      label: Why this matters
+      description: What can break or become expensive to reverse if the assumption is wrong?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: development-blocked
+    attributes:
+      label: Development blocked
+      description: YES means the irreversible decision is blocked; unrelated reversible development should still continue.
+      options:
+        - "YES"
+        - "NO"
+    validations:
+      required: true
+
+  - type: textarea
+    id: needed-output
+    attributes:
+      label: Needed output
+      description: What should research return (contract, evidence, benchmark, legal interpretation, runtime reproduction, etc.)?
+    validations:
+      required: true
